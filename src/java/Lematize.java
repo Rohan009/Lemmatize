@@ -23,62 +23,44 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author aayus
+ * @author ROhAn
  */
-
 public class Lematize extends HttpServlet {
-protected StanfordCoreNLP pipeline;
-//            public Lematize() {
-//    // Create StanfordCoreNLP object properties, with POS tagging
-//    // (required for lemmatization), and lemmatization
-//  
-//}
 
-public List<String> lemmatize(String documentText)
-{
-      Properties props;
-    props = new Properties();
-    props.put("annotators", "tokenize, ssplit, pos, lemma");
+    protected StanfordCoreNLP pipeline;
 
-    
-    this.pipeline = new StanfordCoreNLP(props);
-    List<String> lemmas = new LinkedList<String>();
-    // Create an empty Annotation just with the given textd
-    Annotation document = new Annotation(documentText);
-    // run all Annotators on this text
-    this.pipeline.annotate(document);
-    // Iterate over all of the sentences found
-    List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-    for(CoreMap sentence: sentences) {
-        // Iterate over all tokens in a sentence
-        for (CoreLabel token: sentence.get(TokensAnnotation.class)) {
+    public List<String> lemmatize(String documentText) {
+        Properties props;
+        props = new Properties();
+        props.put("annotators", "tokenize, ssplit, pos, lemma");
+
+        this.pipeline = new StanfordCoreNLP(props);
+        List<String> lemmas = new LinkedList<String>();
+        // Create an empty Annotation just with the given textd
+        Annotation document = new Annotation(documentText);
+        // run all Annotators on this text
+        this.pipeline.annotate(document);
+        // Iterate over all of the sentences found
+        List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+        for (CoreMap sentence : sentences) {
+            // Iterate over all tokens in a sentence
+            for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
             // Retrieve and add the lemma for each word into the
-            // list of lemmas
-            lemmas.add(token.get(LemmaAnnotation.class));
+                // list of lemmas
+                lemmas.add(token.get(LemmaAnnotation.class));
+            }
         }
+        return lemmas;
     }
-    return lemmas;
-}
 
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
-         response.setContentType("text/html");
-         PrintWriter out = response.getWriter();
-         String a =request.getParameter("firstname");
 
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        String a = request.getParameter("firstname");
 
-//public static void main(String[] args) {
-
-    //out.println("Starting Stanford Lemmatizer");
-   //String text = "Fuckers ";
-  
-    Lematize slem = new Lematize();
-    out.println(slem.lemmatize(a));
+        Lematize slem = new Lematize();
+        out.println(slem.lemmatize(a));
+    }
 }
-}
-        
-    
-    
-    
-
